@@ -5,10 +5,16 @@ from apprenant import Apprenant
 class Enseignant(Utilisateur):
     def __init__(self, idUser, prenom, nom, email, role=Role.ENSEIGNANT):
         super().__init__(idUser, prenom, nom, email, role)
+
+    def recupe_apprenant_par_id(self, id, liste_apprenants) -> Apprenant|None:
+        for i in range(len(liste_apprenants)):
+            if(liste_apprenants[i].idUser== id):
+                return liste_apprenants[i]
+        return None
         
 
     def creer_apprenant(self, idApprenant, prenom, nom, email, liste_apprenants):
-        apprenant = Apprenant(idApprenant, prenom, nom, email)
+        apprenant = Apprenant(idApprenant, prenom, nom, email, self.idUser)
         liste_apprenants.append(apprenant)
         return apprenant
 
@@ -35,4 +41,4 @@ class Enseignant(Utilisateur):
         else:
             print("Liste des apprenants supervisés par l'enseignant:")
             for apprenant in liste_apprenants:
-                print(f"ID : {apprenant.idUser}, Nom : {apprenant.nom}, Prénom : {apprenant.prenom}, Email : {apprenant.email}")
+                print(f"ID : {apprenant.idUser}, Nom : {apprenant.nom}, Prénom : {apprenant.prenom}, Email : {apprenant.email} Ens_id : {apprenant.id_ens}")
