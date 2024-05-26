@@ -2,12 +2,19 @@ from utilisateur import Utilisateur
 from role import Role
 from apprenant import Apprenant
 
-class Enseignant(Utilisateur):
-    def __init__(self, idUser, prenom, nom, email, mot_de_passe, role=Role.ENSEIGNANT):
-        super().__init__(idUser, prenom, nom, email, role)
+# enseignant.py
+class Enseignant:
+    def __init__(self, idEnseignant, nom, prenom, email, mot_de_passe, role):
+        self.idEnseignant = idEnseignant
+        self.nom = nom
+        self.prenom = prenom
+        self.email = email
         self.mot_de_passe = mot_de_passe
+        self.role = role
+
     def __str__(self):
-        return f"Enseignant(ID: {self.idUser}, Nom: {self.nom}, Prénom: {self.prenom}, Email: {self.email})"
+        return f"ID: {self.idEnseignant}, Nom: {self.nom}, Prénom: {self.prenom}, Email: {self.email}, Role: {self.role}"
+
 
 
     def recupe_apprenant_par_id(self, id, liste_apprenants) -> Apprenant|None:
