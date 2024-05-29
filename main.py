@@ -1,10 +1,11 @@
 # Importation des modules nécessaires
 from role import Role
-import getpass
+from datetime import datetime
 from enseignant import Enseignant
 from apprenant import Apprenant
 from admin import Admin
 from groupe import Groupe
+from tp import Tp
 
 # Initialisation des listes d'apprenants, d'enseignants et d'administrateurs
 liste_apprenants = [
@@ -24,6 +25,10 @@ liste_admins = [
 liste_groupes =[
     Groupe(1, "Groupe 1"),
     Groupe(2, "Groupe 2")
+]
+
+liste_TP = [
+    Tp(1, "Outils de versionning",datetime.now(), "22/05/2024","Ce TP enseigne l'utilisation de Git pour le versioning. Après une introduction aux concepts de base, les participants installeront et configureront Git. Ils apprendront à initialiser un dépôt, ajouter des fichiers, et effectuer des commits pour suivre les modifications. Les exercices incluront la gestion des branches, la fusion de changements et la résolution de conflits. Enfin, l'utilisation de GitHub sera abordée pour faciliter la collaboration sur des projets. Ce TP vise à fournir une compréhension pratique des outils de versioning pour une gestion efficace des projets logiciels.")
 ]
 
 
@@ -54,7 +59,7 @@ def verifier_presence_enseignant():
     enseignant_operant = next((a for a in liste_enseignants if a.prenom == prenom_enseignant ), None)
     if enseignant_operant:
         print("\n ***Bienvenu(e) Enseignant(e) ", enseignant_operant.prenom, "!*** \n")
-        main(enseignant_operant)
+        ense(enseignant_operant)
     else:
         print("Le prenom ou le mot de passe incorrect, veuillez vous rassurer que vous avez bien saisi les caracteres.")
         print("\n***Options***\n:")
@@ -128,7 +133,7 @@ def main(admin: Admin):
             #####################################################################################################################
 
             # Fonction principale (tableau de bord de l'admin)
-def main(enseignant: Enseignant):
+def ense(enseignant: Enseignant):
     global liste_enseignants, liste_admins, liste_apprenants
     
     # admin1 = Admin(1, "Mamadou", "Diarra", "diarra@gmail.com","123654")
@@ -139,7 +144,10 @@ def main(enseignant: Enseignant):
         print("2. Voir liste des apprenants")
         print("3. Modifier ou supprimer un apprenant")
         print("4. Créer un groupe")
-        print("5. Afficher listes groupes")
+        print("5. Modifier ou supprimer un groupe")
+        print("6. Afficher listes groupes")
+        print("7. Créer un TP")
+        print("8. Afficher liste des TP")
 
         choix = input("Choisissez une option : ")
 
@@ -166,17 +174,17 @@ def main(enseignant: Enseignant):
                     idUser = int(input("Entrez l'ID de l'apprenant à modifier : "))
                     apprenant = next((ens for ens in liste_apprenants if ens.idUser == idUser), None)
                     if apprenant:
-                        nom = input("Entrez le nouveau nom de l'enseignant : ")
-                        prenom = input("Entrez le nouveau prénom de l'enseignant : ")
-                        email = input("Entrez le nouvel email de l'enseignant : ")
-                        mot_de_passe = input("Entrez le nouveau mot de passe de l'enseignant : ")
+                        nom = input("Entrez le nouveau nom de l'apprenant : ")
+                        prenom = input("Entrez le nouveau prénom de l'apprenant : ")
+                        email = input("Entrez le nouvel email de l'apprenant : ")
+                        mot_de_passe = input("Entrez le nouveau mot de passe de l'apprenant : ")
                         print(enseignant.modifier_apprenant(idUser, nom, prenom, email, mot_de_passe, liste_apprenants))
                         break  # Sort de la boucle si la modification est effectuée avec succès
                     else:
-                        print(f"L'enseignant avec l'ID {idUser} n'existe pas dans notre base de données. Veuillez saisir un autre ID valide.")
+                        print(f"L'apprenant avec l'ID {idUser} n'existe pas dans notre base de données. Veuillez saisir un autre ID valide.")
                 elif sub_choix == '2':
                     while True:
-                        idUser = int(input("Entrez l'ID de l'enseignant à supprimer : "))
+                        idUser = int(input("Entrez l'ID de l'apprenant à supprimer : "))
                         apprenant = next((ens for ens in liste_apprenants if ens.idUser == idUser), None)
                         if apprenant:
                             print(enseignant.supprimer_apprenant(idUser, liste_apprenants))
@@ -190,10 +198,52 @@ def main(enseignant: Enseignant):
                         idgroupe = len(liste_groupes) + 1
                         nom = input("Entrez le nom du groupe : ")                        
                         print(enseignant.creer_groupe(idgroupe, nom, liste_groupes))
+
         elif choix == '5':
+            while True:
+                print("1. Modifier un groupe")
+                print("2. Supprimer un groupe")
+                sub_choix = input("Choisissez une option : ")
+                if sub_choix == '1':
+                    idgroupe = int(input("Entrez l'ID du groupe à modifier : "))
+                    groupe = next((ens for ens in liste_groupes if ens.idgroupe == idgroupe), None)
+                    if groupe:
+                        nom = input("Entrez le nouveau nom du groupe : ")
+
+                        print(enseignant.modifier_groupe(idgroupe, nom, liste_groupes))
+                        break  # Sort de la boucle si la modification est effectuée avec succès
+                    else:
+                        print(f"Le groupe avec l'ID {idgroupe} n'existe pas dans notre base de données. Veuillez saisir un autre ID valide.")
+                elif sub_choix == '2':
+                    while True:
+                        idgroupe = int(input("Entrez l'ID du groupe à supprimer : "))
+                        groupe = next((ens for ens in liste_groupes if ens.idgroupe == idgroupe), None)
+                        if groupe:
+                            print(enseignant.supprimer_groupe(idgroupe, liste_groupes))
+                            break  # Sort de la boucle après la suppression
+                        else:
+                            print(f"Le groupe avec l'ID {idgroupe} n'existe pas dans notre base de données. Veuillez saisir un autre ID valide.")
+                    break  # Sort de la boucle après la modification/suppression
+                else:
+                    print("Option invalide, veuillez réessayer.")
+        elif choix == '6':
             print("Liste des groupes créés:")
             for groupe in liste_groupes:
                 print(f"ID : {groupe.idgroupe}, Nom : {groupe.nom}")
+
+        elif choix == '7':
+            libelle_tp= input("Veuillez renseigner le libellé du TP : ")
+            date_de_restitution = input("Veuillez renseigner la date de restitution: ")
+            descriptionTp = input("La description du TP : ")
+            idTp = len(liste_TP) + 1
+           # date_de_creation= datetime.now()
+            print(enseignant.creer_tp(idTp, libelle_tp, date_de_restitution, descriptionTp, liste_TP))
+
+        elif choix == '8':
+            print("Liste des TP créés:")
+            for tp in liste_TP:
+                print(f"ID : {tp.idTp}, Nom : {tp.libelle_tp}, date de céation: {tp.date_de_creation}, date de restitution: {tp.date_de_restitution}, \n {tp.descriptionTp}")
+
 
 # Exécute la fonction main si ce fichier est exécuté directement
 if __name__ == "__main__":
@@ -204,5 +254,5 @@ if __name__ == "__main__":
         verifier_presence_admin()
     elif role == 'enseignant':
         verifier_presence_enseignant()
-else:
-    print("Rôle invalide")
+    else:
+        print("Rôle invalide")
